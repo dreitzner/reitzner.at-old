@@ -244,6 +244,9 @@ main .link:before {
 	height: 100vh;
 	z-index: 4;	
 }
+#overlay.show{
+	display: block;
+}
 
 
 
@@ -277,12 +280,14 @@ main .link:before {
 
     nav{
 		justify-content: space-between;
-    }
+	}
+	nav>ul{
+		transform: translateX(-100vw);
+	}
     nav ul{
 		flex-direction: column;
-		transform: translateX(-100vw);
 		transition: 300ms;
-    }
+	}
     
     header img{
 		width: 50vw;

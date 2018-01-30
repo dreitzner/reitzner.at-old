@@ -10,10 +10,12 @@ if (defined('DEBUG')) {
 
 if( isset($_GET['con']) ){
 	$con = filter_input(INPUT_GET,'con');
-	echo getContent($con);
+	echo json_encode( ["content" => getContent($con)] );
 }
 
 if ( isset($_GET['media']) ){
 	$media = substr( urldecode( filter_input(INPUT_GET,'media') ), 1 );
-	echo file_exists($media)? "true" : "false";
+	$exists = file_exists($media)? "true" : "false";
+	echo json_encode(  ["url" 	 => $media,
+						"exists" => $exists]);
 }

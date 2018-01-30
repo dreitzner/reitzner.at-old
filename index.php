@@ -1,5 +1,5 @@
 <?php
-	header("Link: </css/6a9af4ac4db760ba41e50bb07889a01c.css>; rel=preload; as=style, </js/e56694c6497711296be13d0458357f17.js>; rel=preload; as=script,<https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js>; rel=preload; as=script, <https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js>; rel=preload; as=script, </img/wappenNoShadow.svg>; rel=preload; as=image, </img/mail.svg>; rel=preload; as=image");
+	header("Link: </css/201801301558.min.css>; rel=preload; as=style, </js/201801301551.min.js>; rel=preload; as=script, <https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js>; rel=preload; as=script, </img/wappenNoShadow.svg>; rel=preload; as=image, </img/mail.svg>; rel=preload; as=image");
 	require 'functions.php';
 	#get where we are
 	$title = str_replace("/", "", $_SERVER['REQUEST_URI']);
@@ -14,8 +14,8 @@
 <head>
 	<title>reitzner.at - <?php echo $title;?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="description" content="Wollen Sie ein kleines bis mittleres Web- oder Softwareprojekt bewältigen? Suchen Sie nach Tipps und Tricks? Dann sind Sie hier genau richtig! Stöbern Sie in den schon bewältigten Projekten und überzeugen sie sich selbst.">
-	<meta name="keywords" content="Domenik Reitzner, Ing. Domenik Reitzner, Webdevelopment, Musik, Love &amp; Grace, FIREworship">
+	<meta name="description" content="<?php echo trim( strip_tags($section) ); ?>">
+	<meta name="keywords" content="Domenik Reitzner, Ing. Domenik Reitzner, Webdevelopment, Musik, Love &amp; Grace, FIREworship, <?php echo $title;?>">
 	<meta name="author" content="Domenik Reitzner">
 	<meta name="theme-color" content="#0C3D87" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -79,15 +79,15 @@
 				document.getElementById('css-features').style.display = "none";
 			}
 		</script>
-		Ihr Browser unterstützt nicht alle aktuellen CSS Funktionen.
+		Ihr Browser unterstützt nicht alle aktuellen CSS &amp; JS Funktionen.
 		<br> Bitte steigen Sie auf einen modernen Browser wie
 		<a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a> oder
 		<a href="https://www.mozilla.org/en-US/firefox/new/" target="blank">Mozilla Firefox</a> um.<br>
 		<span onclick="closeCssFeatures()" style="text-decoration:underline;cursor:pointer;color:blue;">[x]close</span>
 	</div>
-	<script async src="/js/e56694c6497711296be13d0458357f17.js"></script>
-	<link rel="stylesheet" href="/css/6a9af4ac4db760ba41e50bb07889a01c.css"/>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script async src="/js/201801301551.min.js"></script>
+	<link rel="stylesheet" href="/css/201801301558.min.css"/>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 	<script>
 	WebFont.load({
