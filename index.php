@@ -87,7 +87,6 @@
 	</div>
 	<script async src="/js/201801301551.min.js"></script>
 	<link rel="stylesheet" href="/css/201801301558.min.css"/>
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 	<script>
 	WebFont.load({
