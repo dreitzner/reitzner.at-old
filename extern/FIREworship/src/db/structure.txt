@@ -1,0 +1,26 @@
+X user
+	char	gId
+	char	email
+	int		lvl
+	
+X org
+	incr	orgId
+	char	orgName
+	
+X songs
+	incr	songId
+	char	title
+	char	artist
+	char	ytId
+	char	docId
+	
+X orgSongs
+	int		songId
+	int		orgId
+	int		number
+	
+O chords (later)
+	int		songsId
+	char	nameParts (seperatet by "|")
+	char	parts (seperatet by "|")
+	char	order

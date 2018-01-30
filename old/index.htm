@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>reitzner.at</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="theme-color" content="#2196F3" />
+		<meta name="viewport" content="width=device-width, 
+                           initial-scale=1.0, 
+                           maximum-scale=1.0, 
+                           user-scalable=no" />
+<meta property="og:url"         content="https://reitzner.at/Music/" />
+						<meta property="og:title"       content="Music by Reitzner" />
+						<meta property="og:description" content="Erhalte einen Überblick über all meine Projekte." />
+						<meta property="og:image"       content="https://reitzner.at/img/dah1000.png" />
+		<link rel="icon" sizes="192x192" href="/img/favicon.png" type="image/png" />
+		<link rel="stylesheet" href="/css/general.css" type="text/css" />
+		<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto:400,700' type='text/css' />
+		<script src="//code.jquery.com/jquery-2.1.1.js"></script>
+		<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+		<script type="text/javascript">
+			function killNotice(){
+				document.getElementById("notice").innerHTML = '';
+			}
+			$(function(){ 
+				function changeURL(obj){
+					var permalink = "../" + $(obj).attr("id") + "/";
+					history.pushState( {}, "", permalink );
+					if($(obj).attr("id") == "Music" && !$('meta[property="og:title]"') ){
+						$('head').append('<meta property="og:url"         content="https://reitzner.at/Music/" />');
+						$('head').append('<meta property="og:title"       content="Music by Reitzner" />');
+						$('head').append('<meta property="og:description" content="Erhalte einen Überblick über all meine Projekte." />');
+						$('head').append('<meta property="og:image"       content="https://reitzner.at/img/dah1000.png" />');
+					}
+					else{
+						$('meta[property="og:url"]').remove();
+						$('meta[property="og:title]"').remove();
+						$('meta[property="og:description"]').remove();
+						$('meta[property="og:image"]').remove();
+					}
+					getContent();
+				}
+				
+				function getContent(){
+					var menu = $(location).attr('pathname').replace(/\//g, '')
+					try{
+						$.get("/getData.php?con="+menu, function(data){
+							$('#contentText').html(data);
+							var title = "reitzner.at - "+menu;
+							$(document).find("title").text(title);
+							$('#title').text(title);
+						});
+						$('.active').toggleClass('active');
+						$("#"+menu).children().toggleClass('active');
+						//for mobile
+						if($( window ).width() < 1024){
+							$('#overlay').css("display","block")
+							mobileNav();
+						}
+						if(menu == "Music"){
+							$('head').append('<meta property="og:url"         content="https://reitzner.at/music/" />');
+							$('head').append('<meta property="og:title"       content="Music by Reitzner" />');
+							$('head').append('<meta property="og:description" content="Erhalte einen Überblick über all meine Projekte." />');
+							$('head').append('<meta property="og:image"       content="https://reitzner.at/img/dah.png" />');
+						}
+						else{
+							$('meta[property="og:url"]').remove();
+							$('meta[property="og:title]"').remove();
+							$('meta[property="og:description"]').remove();
+							$('meta[property="og:image"]').remove();
+					}
+					}
+					catch(err){
+						$('#content').html("<h1>Es ist ein unerwarteter Fehler aufgetreten.</h1><br/>"+err.message);
+					}
+				}
+				
+				function mobileNav(){
+					if($('#overlay').css("display") == "block"){
+						$(function() {
+							$($('.mobileMenu').get().reverse()).each(function(i) {
+							$(this).delay((i++) * 50).animate({"margin-left":"0px"}); })
+						});
+						$('#overlay').fadeOut();
+					}
+					
+					else{
+						$(function() {
+							$('.mobileMenu').each(function(i) {
+							$(this).delay((i++) * 50).animate({"margin-left":"210px"}); })
+						});
+						$('#overlay').fadeIn();
+					}
+				}
+				//get JSON-Array of Menu
+				$.getJSON( "/getData.php", function( data ) {
+					var menu = [];
+					$.each( data, function( key, val ) {
+						var name = val.name;
+						var order = val.order;
+						var idName = name.replace("&auml;", "ae").replace("&ouml;", "oe").replace("&uuml;", "ue").replace(" ","");
+						var type = (order === parseInt(order) ? "menu":"submenu");
+						menu.push('<div class="'+type+' mobileMenu" id="'+idName+'"><div>'+name+'</div></div>');
+					});
+					$("#menu").html(menu);
+				}).done(function(){
+					// bind hide show menu
+					$("#mobileMenu").click(function() {
+						mobileNav();
+					});
+					// bind kill overlay and menu
+					$("#overlay").click(function() {
+						mobileNav();
+					});
+					// Bind Menu click
+					$(".menu, .submenu, .logo").click(function() {
+						changeURL(this);
+					});
+					// bind backspace history
+					$('body').keyup(function(e){
+					   if(e.keyCode == 8) getContent();
+					});
+					// bind browser navigation, look if path != empty
+					$(window).on('popstate', function() {
+						$(location).attr('pathname') == "/" ? $("#Home").trigger("click"):getContent();
+					});
+					// load first content
+					if( $(location).attr('pathname') == "/") $("#Home").trigger("click");
+					else getContent();
+				});
+			});
+		</script>
+	</head>
+	<body onload="killNotice()">
+		<div id="overlay"></div>
+		<div id="head">
+			<div id="mobileMenu"></div>
+			<div id="logo" >
+				<img id="wappen" class="logo" way="other" path="" src="/img/wappenNoShadow.svg" />
+			</div>
+			<a id="mail" href="mailto:domenik@reitzner.at?subject=reitner.at-Mail" target="parent">
+				<img src="/img/mail.svg" />
+			</a>
+			<div id="title">reitzner.at</div>
+		</div>
+	<!-- menu goes here -->
+		<div id="menu"></div>
+		
+	<!-- content goes here -->
+		<div id="center">
+			<div id="content">
+				<div id="notice">
+						Leider unterstützt Ihr Browser kein JavaScript oder Sie haben es deaktiviert.<br>
+						Diese Seite funktioniert nicht ohne :-)
+					</div>
+				<div id="contentText"></div>
+			</div>
+		</div>
+		<div id="test"></div>
+	</body>
+</html>

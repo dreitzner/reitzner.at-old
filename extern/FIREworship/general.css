@@ -1,0 +1,586 @@
+/*
+REGULATES THE PRINT AREA
+*/
+@media print{
+	nav,section { display: none !important; }
+	#printArea{ 
+		display: block !important; 
+		background-color: #fff;
+		color: #000;
+		list-style: none;
+		font-size: 16pt;
+		margin: 25px;
+	}
+
+}
+
+
+/*
+MOBILE
+*/
+@media screen and (max-width: 1023px){
+	.noMobile{
+		display: none;
+	}
+	
+	body, html{
+		font-size: 26px;
+		height: 100%;
+	}
+	
+	table{
+		width: 100%;
+	}
+	
+	tr{
+		height: 55px;
+	}
+	
+	input[type="text"]{
+		font-size: 24px;
+	}
+	
+	#search, #back, #wrapperPrintList{
+		position: fixed;
+		right: -50px;
+		-moz-box-shadow: 0px -5px 5px 2px rgba(179,229,252,0.5);
+		-webkit-box-shadow: 0px -5px 5px 2px rgba(179,229,252,0.5);
+		box-shadow: 0px -5px 5px 2px rgba(179,229,252,0.5);
+	}
+	
+	#search, #back{
+		bottom: -50px;
+		background-position: 5px 5px!important;
+	}
+	
+	#search.itemBig{
+		background-position: 10px 26px!important;
+	}
+	
+	#wrapperPrintList{
+		display:none;
+	}
+	
+	#search input[type="text"] {
+		width: 80%;
+		margin: 0px auto;
+		margin-left: 50px;
+	}
+	
+	#correctPosition{
+		margin-right:50px;
+		margin-bottom: 50px;
+	}
+	
+	#slider-range{
+		width:90%;
+	}
+	
+	.ui-slider-handle{
+		top: -12px;
+		padding: 0px 14px;
+	}
+
+	.itemBig{
+		width: 100%;
+		padding: 25px;
+	}
+	
+	#sort{
+		width: 200px;
+	}
+	
+	#showTop{
+		left: 0px;
+	}
+	
+	/*SHOW SONG*/
+	#doc {
+		display: none;
+	}
+	
+	#utbWrapper{
+		width: 75%; 
+		display: block;
+		position: relative;
+		float: left;
+	}
+	
+	#utbWrapper:before {
+		padding-top: 56.25%; 
+		display: block;
+		content: '';
+	}
+	
+	iframe{
+		width: 100%;
+		height: 100%;
+	}
+	
+	#docIcon{
+		width: 25%;
+		height: auto;
+	}	
+}
+
+@media screen and (min-width: 1024px){
+	/*
+	GENERAL
+	*/
+	table tr td {
+		padding-left: 0;
+		padding-right: 0;
+		vertical-align: middle;
+	}
+
+	.pointer, .ui-sortable{
+		cursor: pointer;
+	}
+
+	/*
+	SELECTION
+	*/
+	
+	#search, #back, #wrapperPrintList{
+		position: fixed;
+		left: -50px;
+		-moz-box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+		-webkit-box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+		box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+	}
+	
+	#search, #back{
+		top: -50px;
+		background-position: 45px 45px!important;
+	}
+	
+	#search.itemBig{
+		background-position: 350px 70px!important;
+	}
+	
+	#wrapperPrintList{
+		top: 150px;
+		z-index: 1000;
+		background-image: url(img/list.png)!important;
+		background-repeat: no-repeat!important;
+		background-position: 50px 26px!important;
+	}
+	
+	#wrapperPrintList:hover{
+		background-image: none!important;
+	}
+	
+	#search input[type="text"] {
+		width: 250px;
+	}
+	
+	#correctPosition{
+		margin-left:50px;
+		margin-top: 50px;
+		width: 272px;
+	}
+	
+	#slider-range{
+		width:235px;
+	}
+	
+	.ui-slider-handle{
+		top: -7px;
+		padding: 6px 14px;
+	}
+	
+	.itemSmall{
+		width: 100px;
+		height: 100px;
+		-webkit-border-radius: 50px;
+		-moz-border-radius: 50px;
+		border-radius: 50px; 
+	}
+	
+	.itemSmall .showBig{
+		display: none;
+	}
+	
+	.itemBig{
+		width: 350px;
+		padding: 25px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px; 
+	}
+	
+	.itemBig .showBig{
+		display: block;
+	}
+	
+	#sort{
+		width: 194px;
+	}
+	
+	#printList{
+		list-style: none;
+		font-size: 18px;
+	}
+	
+	#printList li{
+		margin-top: -18px;
+		margin-left: 10px;
+	}
+	
+	.playing::before{
+		content: "► ";
+		margin-left: -23px;
+	}
+	
+	#printList li:hover .listDelete{
+		opacity:1.0;
+		filter:alpha(opacity=100); /* For IE8 and earlier */
+	}
+	
+	.listDelete{
+		background: url("img/deleteList.png") no-repeat;
+		background-size: 24px 24px;
+		position:relative;
+		left: 300px;
+		top: -23px;
+		padding: 12px;
+		opacity:0.5;
+		filter:alpha(opacity=50); /* For IE8 and earlier */
+	}
+	
+	#listCount{
+		color: #fff;
+		background: red;
+		height: 18px;
+		width: 18px;
+		margin-left:80px;
+		margin-top: 55px;
+		-webkit-border-radius: 9px;
+		-moz-border-radius: 9px;
+		border-radius: 9px;
+		text-align: center;
+	}
+	
+	#wrapperPrintList:hover #listCount{
+		display: none;
+	}
+	
+	#print{
+		background-image: url(img/print.png);
+		float: right;
+		padding: 24px;
+	}
+	
+	#play{
+		background-image: url(img/play.png);
+		float: left;
+		padding: 24px;
+		margin-left: 30px;
+	}
+	
+	#stop{
+		background-image: url(img/stop.png);
+		float: left;
+		padding: 24px;
+		display: none;
+	}
+
+	/*
+	LIST OF ALL SONGS
+	*/
+	.header h1, .header{
+		text-align: center;
+		font-weight: bold;
+		font-size: 14px;
+	}
+
+	#content{
+		margin-left: 50px;
+	}
+	#result{
+		border: 0px;
+		padding-top: 15px;
+	}	
+
+	#songlist tr .add{
+		opacity: 0;
+		filter:alpha(opacity=0)
+	}
+
+	#songlist tr:hover .add, #songlist tr:hover .remove{
+		opacity: 1;
+		filter:alpha(opacity=100)
+	}
+	
+	#songlist tr .remove{
+		opacity: 0.5;
+		filter:alpha(opacity=50)
+	}
+	
+	.add{
+		background: url("img/add2List.png") no-repeat ;
+	}
+	
+	.remove{
+		background: url("img/removeList.png") no-repeat;
+	}
+	
+	.add, .remove{
+		width: 27px;
+		background-size: 24px 24px;
+		background-position: 0px 1px;
+	}
+
+	/*
+	SHOW SONG
+	*/
+	
+	#showTop{
+		-moz-box-shadow: -5px 5px 5px 2px rgba(179,229,252,0.5);
+		-webkit-box-shadow: -5px 5px 5px 2px rgba(179,229,252,0.5);
+		box-shadow: -5px 5px 5px 2px rgba(179,229,252,0.5);
+		left: 24px;
+	}
+
+	iframe{
+		border: 0;
+		
+	}
+
+	.utb{
+		float:right;
+		width:260px;
+		height:195px;
+	}
+
+	#doc{
+		float: left;
+		width:813px;
+		margin-top: -50px;
+		width: 740px;
+	}
+	
+	#docIcon{
+		width: 100px;
+		height: 100px;
+	}
+
+	.number {
+		padding-left: 5px;
+		padding-right: 15px;
+		text-align: right;
+	}
+	
+	#player{
+		margin: 50px;
+	}
+
+}
+
+html{
+	background-color: #E1F5FE;
+	color: #01579B;
+	font-family: Roboto;
+}
+
+body{
+	padding: 0;
+	margin: 0;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+img{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.hidden{
+	display:none;
+}
+
+#search, #back, #wrapperPrintList{
+	color: #E1F5FE;
+	background: #03A9F4;
+}
+
+#search{
+	background-image: url("img/search.png");
+	z-index: 1001;
+	background-repeat: no-repeat;
+}
+
+#songlist tr:hover, #songlist tr:active{
+	background: #03A9F4;
+	color: #fff;
+}
+
+#back{
+	z-index: 1002;
+	background-image: url(img/close.png);
+}
+
+#search input[type="text"] {
+	padding: 10px;
+	border: solid 1px #dcdcdc;
+	transition: box-shadow 0.3s, border 0.3s;
+	color:#ccc;
+	text-align: center;
+	background:#E1F5FE;
+}
+#search input[type="text"]:focus{
+	border: solid 1px #707070;
+	box-shadow: 0 0 5px 1px #969696;
+	color: #353;
+	text-align: left;
+}
+
+	
+#number{
+	margin: 30px 0px;
+}
+
+#slider-range{
+	height: 5px;
+	margin: 10px;
+}
+.ui-slider{
+	background: #E1F5FE;
+	width: 100%;
+	height: 100%;
+	z-index: 1001;
+}
+
+.ui-slider-handle{
+	height:30px; 
+	width: 30px;
+	margin-left: -15px;
+	position: relative;	
+	z-index:1002;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background: #fff;
+}
+
+.itemSmall{
+	width: 100px;
+	height: 100px;
+	-webkit-border-radius: 50px;
+	-moz-border-radius: 50px;
+	border-radius: 50px; 
+}
+
+.itemSmall .showBig{
+	display: none;
+}
+.itemBig{
+	height: auto;
+}
+
+.itemBig .showBig{
+	display: block;
+}	
+	
+#sort{
+	display:block;
+	margin:0 auto;
+	font-weight: bold;
+	color: #03A9F4;
+}
+
+#sort div{
+	font-size: 16px;
+	display: inline-block;
+	cursor: pointer;
+	background: #E1F5FE;
+	height: 34px;
+	width: 50px;
+	padding-top: 16px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px; 
+	text-align: center;
+	vertical-align:middle;
+	margin: 5px;
+	border: 1px solid #03A9F4;
+	-moz-box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+	-webkit-box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+	box-shadow: 0px 5px 5px 2px rgba(179,229,252,0.5);
+}
+
+#sort div:hover{
+	border-color: #EFF8FC;
+}
+
+.inactive{
+	opacity:0.5;
+	filter:alpha(opacity=50); /* For IE8 and earlier */
+}
+
+.active{
+	opacity:1.0;
+	filter:alpha(opacity=100); /* For IE8 and earlier */
+}
+
+#version{
+	float:right;
+	font-size: .7em;
+	text-decoration: none;
+	color: #fff;
+}
+
+#copyright{
+	float:left;
+	font-size: .7em;
+}
+
+#signOut, .g-signin2{
+	margin: 10px auto;
+	width: 120px;
+}
+
+#showTop{
+	background: #fff;
+	z-index: 500;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	height: 100%;
+}
+
+/*
+LOAD
+*/
+#overlay {
+	display: none;
+	position: fixed;
+	left: 0%;
+	top: 0%;
+	background-color: #eee;
+	opacity:0.5;
+	filter:alpha(opacity=50); /* For IE8 and earlier */
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+}
+
+input[type="text"]{
+	background-color:#E1F5FE;
+	border: 1px #03A9F4 solid;
+}
+
+#printArea{
+	display: none;
+}
+
+@page{
+	size: auto;   /* auto is the current printer page size */
+	margin: 0mm;  /* this affects the margin in the printer settings */
+}
+
+

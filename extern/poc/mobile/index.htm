@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>reitzner.at - Mobile Playground</title>
+    <meta name="author" content="Domenik Reitzner">
+    <meta name="theme-color" content="#0C3D87" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        crossorigin="anonymous">
+    <link rel="icon" sizes="192x192" href="/img/favicon.png" type="image/png" />
+    <style>
+        section h2 i {
+            width: 5.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body class="code-snippets-visible">
+    <div class="container">
+        <header>
+            <h1>Viel Spa&szlig; beim Ausprobieren</h1>
+            Nicht alle Funktionen sind in allen mobilen Browsern m&ouml;glich.
+            <br> F&uuml;r eine ausf&uuml;hrliche Liste besuche
+            <a href="http://mobilehtml5.org/" target="_blank">diese Seite</a>.
+        </header>
+        <section id="vibrate">
+            <h2>
+                <i class="fa fa-mobile" aria-hidden="true"></i>
+                <span>Vibration</span>
+            </h2>
+            <pre id="vibrateArr" class="code-example">[]</pre>
+            <input type="number" id="vibratems" placeholder="Vibration/Pause in ms" class="u-full-width">
+            <button type="button" id="addVibrate" class="u-full-width">Hinzuf&uuml;gen</button>
+            <button type="button" id="delVibrate" class="u-full-width">Zur&uuml;ck setzen</button>
+            <button type="button" id="doVibrate" class="u-full-width">Vibrieren</button>
+            <script>
+                function makeArr(str) {
+                    return (str == "[]") ? [] : str.replace(/[\[\]']+/g, '').split(",");
+                }
+                function initVibrate() {
+                    let addVibrate = document.getElementById("addVibrate");
+                    let delVibrate = document.getElementById("delVibrate");
+                    let doVibrate = document.getElementById("doVibrate");
+                    let vibratems = document.getElementById("vibratems");
+                    let vibrateArr = document.getElementById("vibrateArr");
+
+                    addVibrate.addEventListener("click", function () {
+                        curArr = makeArr(vibrateArr.innerText);
+                        console.log(curArr);
+                        curArr.push(vibratems.value);
+                        vibrateArr.innerText = "[" + curArr.toString() + "]";
+                    });
+                    delVibrate.addEventListener("click", function () {
+                        vibrateArr.innerText = "[]";
+                    });
+                    doVibrate.addEventListener("click", function () {
+                        let vibrateSeq = (makeArr(vibrateArr.innerText).length == 0) ? [100, 30, 100, 30, 100, 200, 200, 30, 200, 30, 200, 200, 100, 30, 100, 30, 100] : makeArr(vibrateArr.innerText);
+                        window.navigator.vibrate(vibrateSeq);
+                    });
+                }
+            </script>
+        </section>
+        <section id="battery">
+            <h2>
+                <i class="fa fa-battery-full" aria-hidden="true"></i>
+                <span>Akkustatus</span>
+            </h2>
+            <h1 class="u-pull-right">
+                <i id="batteryIco" class="fa fa-battery-full" aria-hidden="true"></i>
+            </h1>
+            <h3>
+                <span id="batteryPrct">77</span>%
+            </h3>
+            <span id="batteryTime">Noch ca. 123 Min. verbleiben, basierend auf deiner Nutzung.</span>
+            <script>
+                function batteryChange(battery) {
+                    document.getElementById("batteryPrct").innerText = battery.level * 100;
+                    if (battery.charging) {
+                        document.getElementById("batteryTime").innerHTML = '<i class="fa fa-bolt" aria-hidden="true"></i> Ihr Ger&auml;t wird gerade geladen.';
+                    } else if (battery.dischargingTime == "Infinity") {
+                        document.getElementById("batteryTime").innerHTML = "Die verbleibende Zeit kann nicht abgefragt werden."
+                    } else {
+                        document.getElementById("batteryTime").innerHTML = 'Noch ca. ' + battery.dischargingTime / 60 + ' Min. verbleiben, basierend auf deiner Nutzung.'
+                    }
+                    let batteryCharge = battery.level;
+                    let batteryIco = document.getElementById("batteryIco");
+                    if (batteryCharge > 0.875) {
+                        batteryIco.className = "fa fa-battery-full";
+                    } else if (batteryCharge > 0.625) {
+                        batteryIco.className = "fa fa-battery-three-quarters";
+                    } else if (batteryCharge > 0.375) {
+                        batteryIco.className = "fa fa-battery-half";
+                    } else if (batteryCharge > 0.125) {
+                        batteryIco.className = "fa fa-battery-quarter";
+                    } else {
+                        batteryIco.className = "fa fa-battery-empty";
+                    }
+                }
+
+                function initBattery() {
+                    navigator.getBattery().then(function (battery) {
+                        batteryChange(battery);
+                        battery.onchargingchange = function () {
+                            batteryChange(battery);
+                        };
+
+                        battery.onlevelchange = function () {
+                            batteryChange(battery);
+                        };
+
+                        battery.ondischargingtimechange = function () {
+                            batteryChange(battery);
+                        };
+                    });
+                }
+            </script>
+        </section>
+        <section id="ambientLight">
+            <h2>
+                <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                <span>Umgebungslicht</span>
+            </h2>
+            <span id="lux">?</span>
+            <a href="https://de.wikipedia.org/wiki/Lux_(Einheit)">LUX</a> werden von ihrem Umgebungslicht Sensor gemessen.
+            <script>
+                function initAmbient() {
+                    navigator.permissions.query({ name: 'ambient-light-sensor' }).then(result => {
+                        if (result.state === 'denied') {
+                            console.log('Permission to use ambient light sensor is denied.');
+                            document.getElementById("lux").innerText = "??";
+                            return;
+                        }
+
+                        const als = new AmbientLightSensor({ frequency: 20 });
+                        als.addEventListener('activate', () => console.log('Bereit f&uuml;r die Messung.'));
+                        als.addEventListener('error', event => console.log(`Error: ${event.error.name}`));
+                        als.addEventListener('reading', () => {
+                            document.getElementById("lux").innerText = als.illuminance;
+                        });
+
+                        als.start();
+                    });
+                }
+            </script>
+        </section>
+        <section id="push">
+            <h2>
+                <i class="fa fa-bell" aria-hidden="true"></i>
+                <span>Push Nachricht</span>
+            </h2>
+            
+            bald zu sehen...
+        </section>
+    </div>
+    <script>
+        window.onload = function () {
+            initVibrate();
+            initBattery();
+            initAmbient();
+        }
+    </script>
+</body>
+
+</html>

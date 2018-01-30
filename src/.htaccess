@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Dev Area"
+AuthUserfile "/var/www/vhosts/reitzner.at/httpdocs/src/.htpasswd"
+Require valid-user

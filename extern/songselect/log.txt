@@ -1,0 +1,79 @@
+#	AKTUELLE VERSION:2.2.1
+#	SongSelect for Shekinah School of Worship of the Upper Room
+#	Used Plug-ins: JQUERY, JQUERYUI
+#	Author: Domenik Reitzner
+VERSION 2.2.1 (16.11.2014)
+	- Fixed a problem with numbers under 100 for direct jump
+	- shut down table filter if numeric input
+	- snip from jquery-ui.css for less data
+
+VERSION 2.2.0 (12.11.2014)
+	- If 3 Numbers are punched in you get taken direktly to that song
+
+VERSION 2.1.2 (23.08.2014)
+	- added an option to search in songtext
+
+VERSION 2.1.1 (21.08.2014)
+	- for mobile on reset undo all open tabs
+	- for mobile on intro image fix
+
+VERSION 2.1.0 (17.08.2014)
+	- fixed all the bugs in the reset function
+	- some other minor adjustments for visibility
+	- in the mobile version fixed the end of song list
+
+VERSION 2.0.3 (06.08.2014)
+	- fixed some issue with reset function
+	
+VERSION 2.0.2 (04.08.2014)
+	- return for mobile showsong
+	- fixed ratio for youtube on mobile
+
+VERSION 2.0.1 (01.08.2014)
+	- fixed a problem with Loadbar
+	- small improvements
+
+VERSION 2.0.0 (31.07.2014)
+	- added a floating mobile Version
+	- breaking point is at 1024px
+	- mobile navigation was moved to the bottom to easily access
+	- minor changes because of the mobile Version
+
+VERSION 1.2.0 (17.07.2014)
+	- Added Settings for Intro
+	- Added localStorage of the Setting, Data and LastModified Date
+	- Implemented in GoogleDocs an automatic forwarding of last modified date
+	- Changed setArrows to animate instead of set by css
+	- Changed Slider Event to Stop so it is faster
+
+VERSION 1.1.0 (11.07.2014)
+	- Move the Displaysong out if the SIMPLEMODAL
+	- Perfomrmance updates and consolidation of functions
+
+VERSION 1.0.2 (10.07.2014)
+	- Added intro (progressbar with JQUERYUI)
+	- Created Logo
+	- Moved info more to the right
+
+VERSION 1.0.1 (08.07.2014)
+	- Added Info Tab
+	- Added Current Version in Info Tab
+	- Added Version Information as link in new tab
+	- Added function for tour (only pop-up)
+
+
+VERSION 1.0.0 (05.07.2014)
+	- Search for Songs by title, artist and songtext (will be optinal in the future to optimise speed)
+	- Select Number Range be Slider with 2 handles (JQUERYUI)
+	- Reset all, selection, songlist
+	- sort by title and number up/down
+	- sort by audio support (YouTube/GDrive)
+	- load list from GTables with JQUERY(AJAX-GET)
+	- Icons for YouTube, GDrive, and GDocs
+	- Can Add and Remove Songs from Songlist
+	- Can Print Songlist
+	- Can Sort Songlist (up/down/delet)
+	- the selectTabs can be minimized
+	- the resetTab minimizes/maximizes automaticly
+	- nice fadeIns/fadeOuts
+	- show Song with GDocs and YouTube

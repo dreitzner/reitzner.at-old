@@ -1,0 +1,591 @@
+<!-----------------------------------------------------------
+#	     ______     __           __
+#	    /  ___/    |  |         /  /
+#      /  /__      |  | _____  /  /
+#	  /  ___/      |  |/     |/  /
+#	 /  /    ___   |     /|     /   ___
+#	/__/    /__/   |____/ |____/   /__/
+#	
+#	  FIRE           worship
+#	
+#	Used Plug-ins: JQUERY, JQUERYUI
+#	Author&Copyright: Domenik Reitzner
+------------------------------------------------------------>
+
+<!DOCTYPE html>
+<html style="padding: 0; margin: 0">
+	 <HEAD>
+		<title>FIREworship</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="google-signin-client_id" content="74508341761-fmq8neihdmcaka98a0utjv4i0b39ml2m.apps.googleusercontent.com">
+		<meta name="theme-color" content="#03A9F4">
+		<meta name="viewport" content="width=device-width, 
+                           initial-scale=1.0, 
+                           maximum-scale=1.0, 
+                           user-scalable=no">
+		<link rel="icon" size="192x192" href="img/favicon.png" type="image/png">
+		<link rel="stylesheet" href="general.css">
+		<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto:400,700' type='text/css' />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script>
+		////////
+		// GLOBAL VARIABLES
+		////////
+			var rowCount;		
+			var play = 0;
+			var playerTime = 0;
+			var wait = 0;
+			
+		///////
+		// G SignIn
+		///////
+			function onSignIn(googleUser) {
+				var profile = googleUser.getBasicProfile();
+				var accessToken = googleUser.getAuthResponse().id_token;
+				$('#usrIcon').attr("src",profile.getImageUrl() );
+				$('#signOut').removeClass("hidden");
+				$('.g-signin2').addClass("hidden");
+				$.post( "src/db/verify.php", { code: accessToken} )
+			}
+			
+			function signOut() {
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut().then(function () {
+					console.log('User signed out.');
+				});
+				$('#signOut').addClass("hidden");
+				$('.g-signin2').removeClass("hidden")
+			}
+			
+		///////
+		// YouTube functions
+		///////	
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+			
+			// The API will call this function when the video player is ready.
+			function onPlayerReady(event) {
+				event.target.seekTo(window.playerTime);
+			}
+
+			//    The API calls this function when the player's state changes.
+			//    The function indicates that when playing a video (state=1),
+			//    the player should play for six seconds and then stop.
+			function onPlayerStateChange(event) {
+				if (event.data == YT.PlayerState.ENDED) {
+					var next=0;
+					var play=0;
+					$('#printList li div').each(function(){	
+						if(next){
+							event.target.cueVideoById( $(this).attr('id') );
+							$(this).parent().addClass('playing');
+							play = 1;
+							return false;
+						}
+						if($(this).parent().hasClass('playing') ) {
+							$(this).parent().removeClass('playing');
+							next=1;
+						}
+					});
+					if(play)event.target.playVideo();
+					else switch2('back');
+				}	
+			}
+			
+		///////
+		// CHECK IF ALL OF SELECTION IS STANDARD
+		///////
+			function checkSelection(){
+				var searchTxt = $( "input[name='search']").val().toLowerCase();
+				if(searchTxt == "search title, artist or songtext")  searchTxt = "";
+				var sliderl=$( "#slider-range" ).slider( "values", 0 );
+				var sliderr=$( "#slider-range" ).slider( "values", 1 );
+				if(searchTxt == "" && sliderl == 1 && sliderr == rowCount && $('#num').is(':hidden') && $('#printList li').size() == 0) {
+					$('#reset').switchClass("active","inactive");
+				}
+				else $('#reset').switchClass("inactive","active");
+			}
+		
+		///////
+		// FILTER TABLE BY SELECTION
+		///////
+			function tableFilter() {
+				var go2song = 0;
+				var searchTxt = $( "input[name='search']").val()
+				if(searchTxt.length <= 3) {
+					var numCheckTxt = searchTxt.split('');
+					for(var i = 0; i < searchTxt.length; i++){
+						if($.isNumeric(numCheckTxt[i])) go2song++;
+						if(go2song<1) break;
+					}
+				}
+				if( go2song ){
+					if(searchTxt.length == 3) {
+						if(numCheckTxt[0] == 0){
+							if(numCheckTxt[1] == 0) searchTxt = numCheckTxt[2];
+							else searchTxt = numCheckTxt[1]+numCheckTxt[2];
+						}
+						displaySong(searchTxt);
+						$( "input[name='search']").val("search title, artist or songtext");
+						$('#search').switchClass("itemBig","itemSmall",400,"easeOutExpo",function(){
+							$('#overlay').fadeOut();
+						});
+					}
+				}
+				else{
+					searchTxt = searchTxt.toLowerCase();
+					var rows = $('#songlist tr').get();
+					if(searchTxt == "search title, artist or songtext")  searchTxt = "";
+					var search = searchTxt.split(' ');
+					var wordCount = search.length;	
+				// range
+					var sliderl=$( "#slider-range" ).slider( "values", 0 );
+					var sliderr=$( "#slider-range" ).slider( "values", 1 );
+					checkSelection();
+					$.each(rows, function(index, row){
+						//if not in number range
+						var tempSongNr = $(row).children('td').eq(3).text();
+						if(tempSongNr>sliderr || tempSongNr<sliderl) $(row).css('display', 'none');
+						else{
+							//get Title and Artist
+							var tempTitle = $(row).children('td').eq(1).text().toLowerCase();
+							var tempArtist = $(row).children('td').eq(2).text().toLowerCase();
+							var tempMatch = 0;
+							
+							
+							//look up title & artist
+							for( var i = 0; i < wordCount; i=i+1)
+							{
+								if(search[i]) {
+									if(tempTitle.match(search[i]) ) tempMatch=tempMatch+1;
+									else if(tempArtist.match(search[i]) ) tempMatch=tempMatch+1;
+								}
+								else tempMatch=tempMatch+1;
+							}
+							
+							// if title & artist no match
+							if(wordCount > tempMatch)$(row).css('display', 'none');
+							else $(row).css('display', 'table-row');
+						}
+					});
+				}
+			}
+		
+		///////
+		// DISPLAY SONG
+		///////			
+			function displaySong(songNumber){
+				var showHTML;
+				var showDocKey;
+				var showUtb = 0;
+				if($('#'+songNumber).children('td').eq(4).text() != ' ')
+				{
+					showUtb = $('#'+songNumber).children('td').eq(4).find('a').attr('href');
+				}
+				var showDoc = $('#'+songNumber).children('td').eq(5).find('a').attr('href');	
+				//get doc key
+				var showDocKeyLenght = showDoc.length-5;
+				showDocKey = showDoc.substring(35, showDocKeyLenght );
+				showHTML = "<iframe id='doc' seamless src='https://docs.google.com/document/d/";
+				showHTML += showDocKey;
+				showHTML += "/pub?embedded=true'></iframe>";
+				if(showUtb)
+				{
+					// aspect ratio for mobile
+					showHTML += "<div id='utbWrapper'>";
+					//get utb key
+					var drive = 0;
+					if(showUtb.match(/be\//) ) showUtb = showUtb.split(/be\//);
+					else if(showUtb.match(/\?v=/) ) showUtb = showUtb.split(/\?v=/);
+					else drive = 1;
+					if(drive) showHTML += "<div> <a href='"+showUtb+"' title='download MP3'><img src='img/drive_icon.png' id='docIcon' height='100' width='100'></a></div>";
+					else showHTML += "<iframe class='utb' frameborder='0' src='//www.youtube.com/embed/"+showUtb[1]+"'  allowfullscreen></iframe>";
+					showHTML += "</div>";
+				}
+				showHTML += "<div> <a href='"+showDoc+"' title='ausdrucken oder speichern' target='_blank'><img src='img/google_docs.png' id='docIcon' style='float:right'></a></div>";
+				$('#showTop').html(showHTML);
+				switch2("showSong");
+				var htotal = window.innerHeight;
+				$('#doc').height(htotal+50);
+				$("#doc").contents().find('body').css('padding', '0');
+			}
+			
+		
+		///////
+		// switch2 display something else
+		///////
+			function switch2(place){
+				switch(place){
+					case "showSong": 	$('#showTop').fadeIn();
+										$('#back').show();
+										$('#wrapperPrintList').fadeOut();
+										break;
+					case "back":		$('#showTop').fadeOut();
+										$('#back').addClass("need2hide")
+										if($('#listCount').text() != 0) $('#wrapperPrintList').fadeIn();
+										player.pauseVideo();
+										window.playerTime = player.getCurrentTime();
+										break;
+					default: alert("There seems to be an error");
+				}	
+			}
+		
+		///////
+		// SORT TABLE BY SELECTION
+		///////			
+			function tableSort(how2){
+				var rows = $('#songlist tr').get();
+				var row2sort;
+				var asc;
+				$('.sort').show();
+				if(how2 == 'asc') {
+					row2sort = 1;
+					asc = 1;
+					$( '#asc' ).hide();
+				}
+				
+				else if(how2 == 'desc') {
+					row2sort = 1;
+					asc = 0;
+					$( '#desc' ).hide();
+				}
+				
+				else if(how2 == 'numa'){
+					row2sort = 3;
+					asc = 1;
+					$( '#numa' ).hide();
+				}
+				
+				else  {
+					row2sort = 3;
+					asc = 0;
+					$( '#num' ).hide();
+				}
+				rows.sort(function(a,b) {
+					var A = $(a).children('td').eq(row2sort).text();
+					var B = $(b).children('td').eq(row2sort).text();
+					
+					// for text
+					if(row2sort == 1){
+						if(asc){
+							if(A<B) return -1;
+							if(A>B) return 1;
+							return 0;
+						}
+						else{
+							if(A>B) return -1;
+							if(A<B) return 1;
+							return 0;
+						}
+					}
+					
+					else{
+						if(asc) return A-B;
+						else return B-A;
+					}
+				});
+				$.each(rows, function(index, row){
+					$('#songlist').append(row);
+				});	
+				checkSelection();
+			}
+		///////
+		// PRINT LIST
+		///////
+			function add2List(songNumber){
+				var songTitle = $('#'+songNumber).children('td').eq(1).text();
+				var printListLenght = $('#printList li').size();
+				$("#listCount").html(printListLenght);
+				if( printListLenght <= 1 ) $("#wrapperPrintList").fadeIn();
+				// change class
+				if( $('#'+songNumber).children('td').eq(0).hasClass("add") ){
+					$('#'+songNumber).children('td').eq(0).switchClass("add","remove");
+					var ytLink = $('#'+songNumber).find('a').eq(0).attr('href');
+					var ytKey = '';
+					if( ytLink.match(/youtu/) ){
+						var ytLinkLength = ytLink.length;
+						ytKey = ytLink.substr(ytLinkLength-11);
+					}
+					var listHtml = '<li id="print'+songNumber+'" class="pointer">'+songNumber+' - '+ songTitle+'<div ';
+					if(ytKey) listHtml += 'id="'+ytKey+'" ';
+					listHtml += 'class="listDelete" onclick="add2List('+songNumber+')"></div></li>';
+					$('#printList').append(listHtml);
+					printListLenght++;
+				}
+				else {
+					if(printListLenght <= 1) $("#wrapperPrintList").fadeOut();
+					$('#'+songNumber).children('td').eq(0).switchClass("remove","add");
+					$('#print'+songNumber).remove();
+					printListLenght--;
+				}
+				$("#listCount").html(printListLenght);
+				checkSelection();
+			}
+			
+			function setUp(){
+				/// PUT IN RESULT
+				$('#result').html(window.html);
+				/// COUNT THE SONGS
+				window.rowCount = $('#songlist tr').length;
+				/// SET UP SLIDER (NEED TO WAIT FOR ROW COUNT
+				$( "#slider-range" ).slider({
+					range: true,
+					min: 1,
+					max: rowCount,
+					values: [1,rowCount],
+					slide: function( event, ui ) {
+						$( "#amount" ).html( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+					}, 
+					stop: function( event, ui ) {
+						tableFilter();
+					}
+				});
+				$( "#amount" ).html( $( "#slider-range" ).slider( "values", 0 ) +
+				  " - " + $( "#slider-range" ).slider( "values", 1 ) );
+			}
+			
+		///////
+		// AFTER LOAD
+		///////
+			$(function() {	
+			///////
+			//don't display selected
+			///////
+				$( '#num' ).hide();
+				$("#wrapperPrintList").hide();
+				$("#showTop").hide();
+				$("#back").hide();
+				$('#signOut').addClass("hidden");
+				
+			///////
+			// CHECK IF LOCAL STORAGE IS AVAILABLE
+			///////
+				var load=0;
+				if(typeof(Storage) !== "undefined") load=1;
+					// get the last date of change
+					$.get( "https://god.at/FIREworship/getCsv.php?key=1cfMEo7_qnJfUtf-IRP_0SWat-0K1_9foie30z3fXC5Q", function( data ) {
+						var currentSet = localStorage.lastModified;
+						// IF THERE WHERE NO CHANGES MADE SINCE LAST TIME
+						if( currentSet != data || load) {
+							localStorage.lastModified = data;
+			//////// REPLACE BY CALL TO DB
+							/// LOAD SPREADSHEET INTO LOCAL STORAGE
+							$.get( "https://god.at/FIREworship/getCsv.php?key=11WVFq4HIngN1MWWyGMZsxIDtuvbGbQ_fp6uHaODEZVY", function( data ) {
+								data = data.replace(/"/g,"");
+								var import_row = data.split(/\r\n|\n/);
+								var tempCells ;
+								var totalHTML="<table id='songlist'>";
+								for( var i = 0; i < import_row.length; i++)
+								{
+									// check if min of 5 characters 
+									if(import_row[i].length >= 5){
+										// split row into cells
+										tempCells = import_row[i].split(",");
+										totalHTML += "<tr id='"+tempCells[2]+"'>";
+											// add 2 list
+											totalHTML += "<td class='noMobile add pointer' onclick='add2List("+tempCells[2]+")' title='Add number "+tempCells[2]+" to Songlist'></td>";
+											// Title and Artist and Number as link to song
+											totalHTML += "<td class='pointer' onclick='displaySong("+tempCells[2]+")'>"+tempCells[0]+"</td>";
+											totalHTML += "<td class='pointer noMobile' onclick='displaySong("+tempCells[2]+")'>"+tempCells[1]+"</td>";
+											totalHTML += "<td class='pointer number' onclick='displaySong("+tempCells[2]+")'>"+tempCells[2]+"</td>";
+											//youtube or google drive if not empty
+											if(tempCells[3])
+											{
+												totalHTML += "<td class='noMobile'><a href='"+tempCells[3]+"' target='_blank'><img src='img/";
+												if(tempCells[3].match(/google/) ) totalHTML+="drive_icon";
+												else totalHTML += "YouTube-icon-full_color";
+												totalHTML += ".png' height='24px'></a></td>";
+											}
+											else  totalHTML += "<td class='noMobile'> </td>";
+											// docs1-2
+											if(tempCells[4] ) totalHTML += "<td class='noMobile'><a href='"+tempCells[4]+"' target='_blank'><img src='img/google_docs.png' height='27px'></a></td>";
+											else  totalHTML += "<td class='noMobile'></td>";
+											if(tempCells[5] ) totalHTML += "<td class='noMobile'><a href='"+tempCells[5]+"' target='_blank'><img src='img/google_docs.png' height='27px'></a></td>";
+											else  totalHTML += "<td class='noMobile'></td>";
+										totalHTML += "</tr>";
+									}
+								}
+								totalHTML += "</table>";
+								localStorage.data = totalHTML;
+								window.html = totalHTML;
+								setUp();
+							});		
+						}
+						else window.html = localStorage.data; setUp();
+						
+					});
+					
+			///////
+			// MENUS
+			///////
+				$(".item").mouseenter(function(){
+					if(!window.wait){
+						$(this).switchClass("itemSmall","itemBig",400,"easeOutExpo",function(){
+							$('#overlay').fadeIn();
+						});
+					}
+				}).mouseleave(function() {
+					window.wait = 1;
+					$(this).switchClass("itemBig","itemSmall",400,"easeOutExpo",function(){
+						$('#overlay').fadeOut();
+						window.wait = 0;
+					});
+				});
+				$('#back').mouseleave(function(){
+					if( $('#back').hasClass("need2hide") ){
+						$('#back').removeClass("need2hide");
+						$('#back').hide();
+					}
+				});
+			
+			///////
+			// SORT
+			///////
+				$(".sort").click(function(){
+					tableSort($(this).attr('id'))
+				});
+			////////
+			// RESET
+			////////
+				$("#reset").click(function(){
+					// restore values
+					$( "input[name='search']").val("search title, artist or songtext");
+					$( "#slider-range" ).slider({
+					  values: [1,rowCount]
+					});
+					$( "#amount" ).html( $( "#slider-range" ).slider( "values", 0 ) +
+				  " - " + $( "#slider-range" ).slider( "values", 1 ) );
+					// sort table
+					tableSort('num');
+					tableFilter();
+					$('#printList li').each(function(){
+						$(this).children('div').eq(0)[0].onclick();
+					});
+				});
+			///////
+			// Make Print List drag & drop
+			///////
+				$( "#printList" ).sortable();
+				$( "#printList" ).disableSelection();
+				
+			///////
+			// PRINT
+			///////
+				$('#print').click(function(){
+					$( "#printArea" ).html( $( "#printList" ).html() );
+					window.print();
+				});
+				
+			///////
+			// PLAY LIST 
+			///////
+				$('#play').click(function(){
+					switch2('showSong');
+					var vidId;
+					$('#stop').fadeIn();
+					// check if any element have class playing
+					if( $('#printList .playing').length ) vidId = $('.playing').children('div').attr("id");
+					else{
+						$('#printList li div').each(function(){
+							if($(this).attr('id') ) {
+								vidId = $(this).attr('id');
+								$(this).parent().addClass('playing');
+								return false;
+							}
+						});
+					}
+					// check if showTop has iframe id player
+					if( $('#showTop #player').length ) player.playVideo();
+					else{
+						var wid = $('#showTop').width()-100;
+						var hei = $('#showTop').height()-100;
+						if(wid/16 < hei/9) hei = Math.round(wid/16*9);
+						else wid = Math.round(hei/9*16);
+						$('#showTop').html('<iframe id="player" width="'+wid+'" height="'+hei+'" src="http://www.youtube.com/embed/' + vidId + '?enablejsapi=1" frameborder="0" allowfullscreen></iframe>');
+						
+						player = new YT.Player('player', {
+							events: {
+							'onReady': onPlayerReady,
+							'onStateChange': onPlayerStateChange
+							}
+						});
+					}
+				});
+				$('#stop').click(function(){
+					$('.playing').removeClass("playing");
+					$('#stop').fadeOut();
+					$('#showTop').html('');
+					window.playerTime = 0;
+				});
+				
+			});
+		</script>
+	</HEAD>
+	<body>
+		<div id="overlay"></div>
+		<nav>
+			<div id="search" class="item itemSmall">
+				<div id="correctPosition" class="showBig">
+					
+					<input name='search' value="search title, artist or songtext" type='text' size='35' onkeyup='tableFilter()' onfocus="if(this.value == 'search title, artist or songtext') {this.value=''}" onblur="if(this.value == ''){this.value ='search title, artist or songtext'}">
+					<div id="number" class="selectionContent">
+						<div id="amount" style="margin: 0px auto; width:150px; text-align:center;"></div>
+						<div id='slider-range'></div>
+					</div>
+					<!-- ABC ZYX 123 987-->
+					<div id="sort">
+						<div id="asc" class="sort" >ABC</div>
+						<div id="desc" class="sort" >ZYX</div>
+						<div id="numa" class="sort" >123</div>
+						<div id="num" class="sort" >987</div>
+					</div>
+					<!-- RESET-->
+					<img src="img/reset.png" id="reset" class='inactive pointer' title="reset"/>
+					<!-- SignIn -->
+					<div class="g-signin2" data-onsuccess="onSignIn"></div>
+					<div id="signOut" onclick="signOut();">
+						<div style="height:36px;width:120px;" class="abcRioButton abcRioButtonLightBlue">
+							<div class="abcRioButtonContentWrapper">
+								<div class="abcRioButtonIcon">
+									<img id="usrIcon" src="" width="36px" height="36px"/>
+								</div>
+								<span style="font-size:13px;line-height:34px;" class="abcRioButtonContents">
+									<span id="not_signed_in9rxpbzrvou6a">Sign out</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- VERSION Copyright-->
+					<a href="log.txt" id="version" target="blank">Version: 3.0</a>
+					<div id="copyright">
+						&copy; Domenik Reitzner
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+			</div>
+			<div id="back" class="itemSmall" onclick="switch2('back')"></div>
+			<div id="wrapperPrintList" class="item itemSmall">
+				<div id="listCount"></div>
+				<div class="showBig">
+					<ul id="printList" class="yesPrint"></ul>
+					<div id="print" class="pointer"></div>
+					<div id="play" class="pointer"></div>
+					<div id="stop" class="pointer"></div>
+				</div>
+			</div>
+		</nav>
+		<section>
+			<!-- showSong -->
+			<div id="showTop"></div>
+			<div id="content">
+				<!-- SongList -->
+				<div id="result"></div>
+			</div>
+		</section>
+		<div id="printArea"></div>
+	</body>
+</html>

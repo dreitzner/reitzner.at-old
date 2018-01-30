@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>https://reitzner.at/Home/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/Music/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/Projekte/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/POCGridvsFlex/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/FIREworship/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/ReitstallBendl/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/Gruenwert/</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://reitzner.at/public/Lebenslauf.pdf</loc>
+  <lastmod>2017-11-09T20:09:44+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+</urlset>
